@@ -30,13 +30,7 @@ const HomeStack = () => {
           headerRight: () => {
             return (
               <View style={{flexDirection: 'row', marginRight: 16}}>
-                <Icon
-                  name="search-outline"
-                  size={24}
-                  color={'black'}
-                  style={{marginRight: 8}}
-                />
-                <Icon name="basket-outline" size={24} color={'black'} />
+                <Icon name="search-outline" size={24} color={'black'} />
               </View>
             );
           },
@@ -51,7 +45,6 @@ const HomeStack = () => {
 
 const App = () => {
   const BottomTabs = createBottomTabNavigator();
-
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -60,7 +53,15 @@ const App = () => {
           initialRouteName={'Home'}
           tabBarOptions={{
             style: {
-              borderTopWidth: 0,
+              backgroundColor: '#EFEFEA',
+              elevation: 0,
+              shadowColor: '#EFEFEA',
+              shadowOpacity: 0,
+              shadowOffset: {
+                height: 0,
+                width: 0,
+              },
+              shadowRadius: 0,
             },
             allowFontScaling: true,
             adaptive: true,

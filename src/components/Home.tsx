@@ -1,130 +1,44 @@
-import React, {useRef, useState} from 'react';
-import {
-  Text,
-  View,
-  ScrollView,
-  Animated,
-  Dimensions,
-  StyleSheet,
-} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Text, View, ScrollView, Animated, Dimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {
+  HomeData,
+  initialHomePage,
+  mainCategories,
+  nikeHomePage,
+  Product,
+  subCategories,
+} from '../Utils';
 
 const {width} = Dimensions.get('window');
 
-const MAIN_CATEGORIES = ['Nike', 'Adidas', 'Jordan', 'Puma', 'Rebook', 'Asics'];
-const SUB_CATEGORIES = ['Featured', 'Upcoming', 'New'];
-
-type Product = {
-  brand: string;
-  name: string;
-  price: string;
-  imageUrl: string;
-  bgColor?: string;
-  promotion?: string;
-};
-
-const NIKE_FEAT_PRODUCTS = [
-  {
-    brand: 'NIKE',
-    name: 'ZOOMX VAPORFLY',
-    price: '$130.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/228c9922-686e-443d-b04b-16857e9af198/zoomx-vaporfly-next-2-racing-shoe-dxSLFw.png',
-    bgColor: '#3fe0d0',
-  },
-  {
-    brand: 'NIKE',
-    name: 'SB ZOOM BLAZER',
-    price: '$210.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/d7cb11e8-7f41-4a58-b846-c1dca4e935f8/sb-zoom-blazer-mid-edge-skate-shoe-Gg1p1L.png',
-    bgColor: '#f9b208',
-  },
-  {
-    brand: 'NIKE',
-    name: 'INFINITY FLYKNIT 2',
-    price: '$140.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/767b0f87-f47a-4c9b-bb74-6e875e6c5887/react-infinity-run-flyknit-2-running-shoe-hD0Cd2.png',
-    bgColor: '#867ae9',
-  },
-  {
-    brand: 'NIKE',
-    name: 'AIR-270',
-    price: '$159.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/awjogtdnqxniqqk0wpgf/air-max-270-shoe-nnTrqDGR.png',
-    bgColor: '#999999',
-  },
-  {
-    brand: 'NIKE',
-    name: 'WILDHORSE 7',
-    price: '$168.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/0b64a85e-ea97-4b8c-8d0b-cb78932937c0/wildhorse-7-trail-running-shoe-Cx4rCx.png',
-    bgColor: '#60654a',
-  },
-  {
-    brand: 'NIKE',
-    name: 'AIR ZOOM TERRA',
-    price: '$210.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/f638800c-47a4-43ea-bd6b-89b2cf5838cd/air-zoom-terra-kiger-7-trail-running-shoe-8960WB.png',
-    bgColor: '#4d4d4d',
-  },
-];
-
-const NIKE_TRENDING_PRODUCTS = [
-  {
-    brand: 'NIKE',
-    name: 'AIRMAX 2090',
-    price: '$140.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/da82111e-17e3-4335-88c3-2cc1be3bac7e/air-max-2090-shoe-NGbdqr.png',
-    promotion: '20% off',
-  },
-  {
-    brand: 'NIKE',
-    name: 'AIR ZOOM REP 2',
-    price: '$135.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/01b33da3-d1d0-44e9-b03d-df173f4711e0/air-zoom-superrep-2-hiit-class-shoe-hQxXZ4.png',
-    promotion: 'Featured',
-  },
-  {
-    brand: 'NIKE',
-    name: 'METCON 6',
-    price: '$120.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/e626823a-0999-485c-9243-f43c6d667311/metcon-6-training-shoe-jHPqks.png',
-    promotion: 'New',
-  },
-  {
-    brand: 'NIKE',
-    name: 'BLAZER MID 77',
-    price: '$140.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/ba95aa69-93ff-47d3-97b9-926e3c92b568/blazer-mid-77-shoe-jg7NGq.png',
-    promotion: 'New',
-  },
-  {
-    brand: 'NIKE',
-    name: 'AIR MAX 95 ESSENTIAL',
-    price: '$200.00',
-    imageUrl:
-      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/f91719bd-105b-4b9f-badc-f569eb80d6a0/air-max-95-essential-shoe-18JXCv.png',
-    promotion: 'New',
-  },
-];
-
-const NIKE_MORE_PRODUCTS = NIKE_TRENDING_PRODUCTS.slice().reverse();
+const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
 export default () => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const [category, setCategory] = useState(0);
   const [subCategory, setSubCategory] = useState(0);
+  const [homeData, setHomeData] = useState<HomeData>(initialHomePage);
+
+  const topProducts =
+    subCategory === 0
+      ? homeData.featured
+      : subCategory === 1
+      ? homeData.nearing
+      : subCategory === 2
+      ? homeData.new
+      : [];
+
+  useEffect(() => {
+    if (category === 0) {
+      setHomeData(nikeHomePage);
+    } else {
+      //TODO also populate other categories.
+      setHomeData(initialHomePage);
+    }
+  }, [category]);
 
   return (
     <View style={{flex: 1, backgroundColor: '#EFEFEA'}}>
@@ -134,210 +48,216 @@ export default () => {
           position: 'absolute',
           height: 300,
           width,
-        }}></View> */}
-      <View
-        style={{
-          backgroundColor: 'white',
-          paddingVertical: 16,
-        }}>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {MAIN_CATEGORIES.map((c, i) => {
-            return (
-              <Text
-                onPress={() => {
-                  setCategory(i);
-                }}
-                style={{
-                  fontSize: 16,
-                  marginHorizontal: 16,
-                  fontWeight: category === i ? 'bold' : 'normal',
-                  color: category === i ? 'black' : 'gray',
-                }}
-                key={c}>
-                {c}
-              </Text>
-            );
-          })}
-        </ScrollView>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            backgroundColor: 'white',
-            flexDirection: 'row',
-          }}>
-          <View>
-            <ScrollView
+        }}
+      /> */}
+      <CateogoriesHeader
+        category={category}
+        onCategorySelected={(cat) => {
+          setCategory(cat);
+        }}
+      />
+      {topProducts.length > 0 && (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              flexDirection: 'row',
+            }}>
+            <SubCategoriesHeader
+              subCategory={subCategory}
+              onSubCategoryPressed={(subCat) => {
+                setSubCategory(subCat);
+              }}
+            />
+            <Animated.ScrollView
               contentContainerStyle={{
-                flexGrow: 1,
-                justifyContent: 'space-around',
-                alignItems: 'center',
-              }}>
-              {SUB_CATEGORIES.map((s, i) => {
+                paddingVertical: 16,
+              }}
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+              onScroll={Animated.event(
+                [{nativeEvent: {contentOffset: {x: scrollX}}}],
+                {
+                  useNativeDriver: true,
+                },
+              )}
+              pagingEnabled
+              snapToInterval={(width + 48) / 2 + 32}
+              decelerationRate={'fast'}>
+              {topProducts.map((p, index) => {
                 return (
-                  <Text
-                    onPress={() => {
-                      setSubCategory(i);
-                    }}
-                    key={s}
+                  <Animated.View
+                    key={p.name}
                     style={{
-                      fontSize: 11,
-                      color: subCategory === i ? 'black' : 'gray',
-                      transform: [{rotateZ: '-90deg'}],
+                      transform: [
+                        {
+                          scale: scrollX.interpolate({
+                            inputRange: topProducts.map(
+                              (_, i) => i * ((width + 48) / 2 + 32),
+                            ),
+                            outputRange: topProducts.map((_, i) => {
+                              return index === i ? 1 : 0.85;
+                            }),
+                            extrapolate: 'clamp',
+                          }),
+                        },
+                      ],
                     }}>
-                    {s}
-                  </Text>
+                    <MainCard
+                      products={topProducts}
+                      product={p}
+                      scrollX={scrollX}
+                    />
+                  </Animated.View>
                 );
               })}
-            </ScrollView>
+            </Animated.ScrollView>
           </View>
-          <Animated.ScrollView
-            contentContainerStyle={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingVertical: 16,
-            }}
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}
-            onScroll={Animated.event(
-              [{nativeEvent: {contentOffset: {x: scrollX}}}],
-              {
-                useNativeDriver: true,
-              },
-            )}
-            scrollEventThrottle={16}
-            pagingEnabled
-            snapToInterval={200}
-            decelerationRate={'fast'}
-            disableIntervalMomentum={true}>
-            {NIKE_FEAT_PRODUCTS.map((p, index) => {
-              return (
-                <Animated.View
-                  key={p.name}
-                  style={{
-                    transform: [
-                      {
-                        scale: scrollX.interpolate({
-                          inputRange: NIKE_FEAT_PRODUCTS.map((_, i) => i * 200),
-                          outputRange: NIKE_FEAT_PRODUCTS.map((_, i) => {
-                            return index === i ? 1 : 0.9;
-                          }),
-                          extrapolate: 'clamp',
-                        }),
-                        // rotateY: scrollX.interpolate({
-                        //   inputRange: NIKE_PRODUCTS.map((_, i) => i * 200),
-                        //   outputRange: NIKE_PRODUCTS.map((_, i) => {
-                        //     return index === i
-                        //       ? '0deg'
-                        //       : index === i - 1
-                        //       ? '50deg'
-                        //       : '-50deg';
-                        //   }),
-                        //   extrapolate: 'clamp',
-                        // }),
-                      },
-                    ],
-                  }}>
-                  <MainCard product={p} />
-                </Animated.View>
-              );
-            })}
-          </Animated.ScrollView>
-        </View>
-        <View>
-          <View
-            style={{
-              backgroundColor: 'white',
-              paddingHorizontal: 16,
-              paddingTop: 16,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <Text style={{fontSize: 16, fontWeight: 'bold'}}>Trending now</Text>
-            <MaterialIcons name="arrow-right-alt" size={24} color={'black'} />
-          </View>
-          <View>
-            <ScrollView
-              contentContainerStyle={{
-                paddingVertical: 24,
-                paddingHorizontal: 8,
-                justifyContent: 'center',
-                alignItems: 'center',
+          {homeData.trending && (
+            <ContentScrollView
+              label={'Trending now'}
+              products={homeData.trending}
+            />
+          )}
+          {homeData.more && (
+            <ContentScrollView label={'More'} products={homeData.more} />
+          )}
+        </ScrollView>
+      )}
+    </View>
+  );
+};
+
+const SubCategoriesHeader = ({
+  subCategory,
+  onSubCategoryPressed,
+}: {
+  subCategory: number;
+  onSubCategoryPressed(subCat: number): void;
+}) => {
+  return (
+    <View>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          width: 48,
+          justifyContent: 'space-around',
+          alignItems: 'center',
+        }}>
+        {subCategories.map((s, i) => {
+          return (
+            <Text
+              onPress={() => {
+                onSubCategoryPressed(i);
               }}
-              showsHorizontalScrollIndicator={false}
-              scrollEventThrottle={16}
-              pagingEnabled
-              snapToInterval={width / 2 + 24}
-              decelerationRate={'fast'}
-              disableIntervalMomentum={true}
-              horizontal={true}>
-              <View
-                style={{
-                  position: 'absolute',
-                  height: 180 / 2 + 24,
-                  left: -400, // allow the bg color to be visible when overscrolling
-                  right: -400,
-                  top: 0,
-                  backgroundColor: 'white',
-                }}
-              />
-              {NIKE_TRENDING_PRODUCTS.map((n) => {
-                return <SecondaryCard key={n.name} product={n} />;
-              })}
-            </ScrollView>
-          </View>
-        </View>
-        <View>
-          <View
-            style={{
-              backgroundColor: 'white',
-              paddingTop: 16,
-              paddingHorizontal: 16,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <Text style={{fontSize: 16, fontWeight: 'bold'}}>More</Text>
-            <MaterialIcons name="arrow-right-alt" size={24} color={'black'} />
-          </View>
-          <View>
-            <ScrollView
-              contentContainerStyle={{
-                paddingVertical: 24,
-                paddingHorizontal: 8,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              showsHorizontalScrollIndicator={false}
-              scrollEventThrottle={16}
-              pagingEnabled
-              snapToInterval={width / 2 + 24}
-              decelerationRate={'fast'}
-              disableIntervalMomentum={true}
-              horizontal={true}>
-              <View
-                style={{
-                  position: 'absolute',
-                  height: 180 / 2 + 24,
-                  left: -400, // allow the bg color to be visible when overscrolling
-                  right: -400,
-                  top: 0,
-                  backgroundColor: 'white',
-                }}
-              />
-              {NIKE_MORE_PRODUCTS.map((n) => {
-                return <SecondaryCard key={n.name} product={n} />;
-              })}
-            </ScrollView>
-          </View>
-        </View>
+              key={s}
+              style={{
+                fontSize: 11,
+                fontFamily:
+                  subCategory === i ? 'Helvetica-Bold' : 'Helvetica-Light',
+                transform: [{rotateZ: '-90deg'}],
+              }}>
+              {s}
+            </Text>
+          );
+        })}
       </ScrollView>
     </View>
   );
 };
 
-const SecondaryCard = ({product}: {product: Product}) => {
+const CateogoriesHeader = ({
+  category,
+  onCategorySelected,
+}: {
+  category: number;
+  onCategorySelected(category: number): void;
+}): JSX.Element => {
+  return (
+    <View
+      style={{
+        backgroundColor: 'white',
+        paddingVertical: 16,
+      }}>
+      <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
+        {mainCategories.map((c, i) => {
+          return (
+            <Text
+              onPress={() => {
+                onCategorySelected(i);
+              }}
+              style={{
+                fontSize: 16,
+                marginHorizontal: 16,
+                fontFamily:
+                  category === i ? 'Helvetica-Bold' : 'Helvetica-Light',
+                color: category === i ? 'black' : 'gray',
+              }}
+              key={c}>
+              {c}
+            </Text>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+};
+
+const ContentScrollView = ({
+  label,
+  products,
+}: {
+  label: string;
+  products: Product[];
+}): JSX.Element => {
+  return (
+    <View>
+      <View
+        style={{
+          backgroundColor: 'white',
+          paddingHorizontal: 16,
+          paddingTop: 16,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <Text style={{fontSize: 16, fontFamily: 'Helvetica-Bold'}}>
+          {label}
+        </Text>
+        <MaterialIcons name="arrow-right-alt" size={24} color={'black'} />
+      </View>
+      <View>
+        <ScrollView
+          contentContainerStyle={{
+            paddingVertical: 24,
+            paddingHorizontal: 8,
+          }}
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          snapToInterval={width / 2 - 8}
+          decelerationRate={'fast'}
+          disableIntervalMomentum={true}
+          horizontal={true}>
+          <View
+            style={{
+              position: 'absolute',
+              height: 180 / 2 + 24,
+              left: -400, // allow the bg color to be visible when overscrolling
+              right: -400,
+              top: 0,
+              backgroundColor: 'white',
+            }}
+          />
+          {products.map((n) => {
+            return <SecondaryCard key={n.name} product={n} />;
+          })}
+        </ScrollView>
+      </View>
+    </View>
+  );
+};
+
+const SecondaryCard = ({product}: {product: Product}): JSX.Element => {
   return (
     <View
       style={{
@@ -345,18 +265,17 @@ const SecondaryCard = ({product}: {product: Product}) => {
         shadowOpacity: 0.1,
         shadowRadius: 9,
         elevation: 4,
-        justifyContent: 'center',
         alignItems: 'center',
-        height: 180,
+        height: 220,
+        marginHorizontal: 8,
         width: width / 2 - 24,
         backgroundColor: 'white',
-        marginHorizontal: 8,
         borderRadius: 10,
         padding: 8,
       }}>
       <View
         style={{
-          width: width / 2 - 24,
+          width: width / 2 - 32,
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -369,6 +288,7 @@ const SecondaryCard = ({product}: {product: Product}) => {
             paddingVertical: 2,
             fontSize: 11,
             color: 'white',
+            fontFamily: 'Helvetica',
           }}>
           {product.promotion}
         </Text>
@@ -378,8 +298,9 @@ const SecondaryCard = ({product}: {product: Product}) => {
         resizeMode={'cover'}
         source={{uri: product.imageUrl}}
         style={{
-          height: 80,
-          width: 110,
+          height: 100,
+          width: 150,
+          marginBottom: 16,
           transform: [
             {
               rotateZ: '-16deg',
@@ -387,15 +308,32 @@ const SecondaryCard = ({product}: {product: Product}) => {
           ],
         }}
       />
-      <Text style={{color: 'black', marginVertical: 8, fontSize: 11}}>
+      <Text
+        style={{
+          color: 'black',
+          marginVertical: 8,
+          fontSize: 11,
+          textAlign: 'center',
+          fontFamily: 'Helvetica-Bold',
+        }}>
         {product.brand + ' ' + product.name}
       </Text>
-      <Text style={{color: 'black', fontSize: 11}}>{product.price}</Text>
+      <Text style={{color: 'black', fontSize: 11, fontFamily: 'Helvetica'}}>
+        {product.price}
+      </Text>
     </View>
   );
 };
 
-const MainCard = ({product}: {product: Product}) => {
+const MainCard = ({
+  product,
+  products,
+  scrollX,
+}: {
+  product: Product;
+  products: Product[];
+  scrollX: Animated.Value;
+}): JSX.Element => {
   return (
     <View
       style={{
@@ -403,14 +341,20 @@ const MainCard = ({product}: {product: Product}) => {
         shadowOpacity: 0.1,
         shadowRadius: 9,
         elevation: 4,
-        height: 270,
-        width: 190,
+        height: 340,
+        width: (width + 48) / 2,
         backgroundColor: product.bgColor,
         marginHorizontal: 16,
         borderRadius: 10,
         padding: 16,
       }}>
-      <Text style={{color: 'white', fontSize: 14, marginBottom: 8}}>
+      <Text
+        style={{
+          color: 'white',
+          fontSize: 14,
+          marginBottom: 8,
+          fontFamily: 'Helvetica',
+        }}>
         {product.brand}
       </Text>
       <Text
@@ -419,22 +363,39 @@ const MainCard = ({product}: {product: Product}) => {
           color: 'white',
           fontSize: 18,
           marginBottom: 8,
-          fontWeight: 'bold',
+          fontFamily: 'Helvetica-Bold',
         }}>
         {product.name}
       </Text>
-      <Text style={{color: 'white', fontSize: 14}}>{product.price}</Text>
-      <FastImage
-        resizeMode={'cover'}
+      <Text style={{color: 'white', fontSize: 14, fontFamily: 'Helvetica'}}>
+        {product.price}
+      </Text>
+      <AnimatedFastImage
+        resizeMode={'contain'}
         source={{uri: product.imageUrl}}
         style={{
           position: 'absolute',
-          height: 270,
-          width: 190,
+          height: 340,
+          width: (width + 48) / 2,
           left: 16,
           transform: [
             {
-              rotateZ: '-16deg',
+              rotateZ: scrollX.interpolate({
+                inputRange: products.map((_, i) => i * ((width + 48) / 2 + 32)),
+                outputRange: products.map((_, i) => {
+                  return products.indexOf(product) === i ? '-16deg' : '-50deg';
+                }),
+                extrapolate: 'clamp',
+              }),
+            },
+            {
+              scale: scrollX.interpolate({
+                inputRange: products.map((_, i) => i * ((width + 48) / 2 + 32)),
+                outputRange: products.map((_, i) => {
+                  return products.indexOf(product) === i ? 1.2 : 0.45;
+                }),
+                extrapolate: 'clamp',
+              }),
             },
           ],
         }}

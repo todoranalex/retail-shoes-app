@@ -36,6 +36,10 @@
 		338E89DA49A449CA828B5577 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A70D5CB401454965AC38BB85 /* Octicons.ttf */; };
 		8245035782A24325823B188D /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 801CF37702A64B48A9D4CE98 /* SimpleLineIcons.ttf */; };
 		DBFC3B725D774424842E7A43 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95D9C9AADD02412BB7A6A259 /* Zocial.ttf */; };
+		DA4A15E6AA7D4E0E9F2B62EE /* Helvetica-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B219239154D44E4A4850C7F /* Helvetica-Bold.ttf */; };
+		057C038858E44A4BB9938FFB /* Helvetica-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 527EC6595ED445F2B2517A65 /* Helvetica-Light.ttf */; };
+		A279ED70A8EB48D5B3B363D6 /* Helvetica-Oblique.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 874407FE365446C4A346EF30 /* Helvetica-Oblique.ttf */; };
+		5D96AAA2F3BC4551AD491996 /* Helvetica.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 10C707DFC3AE44B5BE0B35A8 /* Helvetica.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +103,10 @@
 		A70D5CB401454965AC38BB85 /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		801CF37702A64B48A9D4CE98 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		95D9C9AADD02412BB7A6A259 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4B219239154D44E4A4850C7F /* Helvetica-Bold.ttf */ = {isa = PBXFileReference; name = "Helvetica-Bold.ttf"; path = "../assets/fonts/Helvetica-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		527EC6595ED445F2B2517A65 /* Helvetica-Light.ttf */ = {isa = PBXFileReference; name = "Helvetica-Light.ttf"; path = "../assets/fonts/Helvetica-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		874407FE365446C4A346EF30 /* Helvetica-Oblique.ttf */ = {isa = PBXFileReference; name = "Helvetica-Oblique.ttf"; path = "../assets/fonts/Helvetica-Oblique.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		10C707DFC3AE44B5BE0B35A8 /* Helvetica.ttf */ = {isa = PBXFileReference; name = "Helvetica.ttf"; path = "../assets/fonts/Helvetica.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -250,6 +258,10 @@
 				A70D5CB401454965AC38BB85 /* Octicons.ttf */,
 				801CF37702A64B48A9D4CE98 /* SimpleLineIcons.ttf */,
 				95D9C9AADD02412BB7A6A259 /* Zocial.ttf */,
+				4B219239154D44E4A4850C7F /* Helvetica-Bold.ttf */,
+				527EC6595ED445F2B2517A65 /* Helvetica-Light.ttf */,
+				874407FE365446C4A346EF30 /* Helvetica-Oblique.ttf */,
+				10C707DFC3AE44B5BE0B35A8 /* Helvetica.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -415,6 +427,10 @@
 				338E89DA49A449CA828B5577 /* Octicons.ttf in Resources */,
 				8245035782A24325823B188D /* SimpleLineIcons.ttf in Resources */,
 				DBFC3B725D774424842E7A43 /* Zocial.ttf in Resources */,
+				DA4A15E6AA7D4E0E9F2B62EE /* Helvetica-Bold.ttf in Resources */,
+				057C038858E44A4BB9938FFB /* Helvetica-Light.ttf in Resources */,
+				A279ED70A8EB48D5B3B363D6 /* Helvetica-Oblique.ttf in Resources */,
+				5D96AAA2F3BC4551AD491996 /* Helvetica.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

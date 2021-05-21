@@ -77,6 +77,10 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Poppins-Thin.ttf</string>
+		<string>Helvetica-Bold.ttf</string>
+		<string>Helvetica-Light.ttf</string>
+		<string>Helvetica-Oblique.ttf</string>
+		<string>Helvetica.ttf</string>
 	</array>
 </dict>
 </plist>

@@ -22,7 +22,12 @@ const HomeStack = () => {
           headerTitleStyle: {color: 'transparent'},
           headerLeft: () => {
             return (
-              <Text style={{marginLeft: 16, fontWeight: '500', fontSize: 24}}>
+              <Text
+                style={{
+                  marginLeft: 16,
+                  fontFamily: 'Helvetica-Bold',
+                  fontSize: 26,
+                }}>
                 Discover
               </Text>
             );
@@ -70,7 +75,7 @@ const App = () => {
             allowFontScaling: true,
             adaptive: true,
             showLabel: false,
-            activeTintColor: '#e93b81',
+            activeTintColor: '#f55c47',
             inactiveTintColor: 'gray',
           }}>
           <BottomTabs.Screen

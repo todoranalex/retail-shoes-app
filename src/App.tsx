@@ -8,6 +8,7 @@ import ShoppingCart from './components/ShoppingCart';
 import Profile from './components/Profile';
 import {createStackNavigator} from '@react-navigation/stack';
 import Home from './components/Home';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const HomeStack = () => {
   const Stack = createStackNavigator();
@@ -30,7 +31,17 @@ const HomeStack = () => {
           headerRight: () => {
             return (
               <View style={{flexDirection: 'row', marginRight: 16}}>
-                <Icon name="search-outline" size={24} color={'black'} />
+                <Icon
+                  name="md-search-sharp"
+                  size={24}
+                  style={{marginRight: 16}}
+                  color={'black'}
+                />
+                <MaterialCommunityIcons
+                  name="bell-outline"
+                  size={24}
+                  color={'black'}
+                />
               </View>
             );
           },
@@ -54,14 +65,7 @@ const App = () => {
           tabBarOptions={{
             style: {
               backgroundColor: '#EFEFEA',
-              elevation: 0,
-              shadowColor: '#EFEFEA',
-              shadowOpacity: 0,
-              shadowOffset: {
-                height: 0,
-                width: 0,
-              },
-              shadowRadius: 0,
+              borderTopColor: 'transparent',
             },
             allowFontScaling: true,
             adaptive: true,
@@ -74,7 +78,11 @@ const App = () => {
             component={HomeStack}
             options={{
               tabBarIcon: ({color}) => (
-                <Icon name="home-outline" size={24} color={color} />
+                <MaterialCommunityIcons
+                  name="home-outline"
+                  size={24}
+                  color={color}
+                />
               ),
             }}
           />

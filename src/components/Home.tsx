@@ -1,8 +1,19 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
-import {Text, View, ScrollView, Animated, Dimensions} from 'react-native';
+import {
+  Text,
+  View,
+  ScrollView,
+  Animated,
+  Dimensions,
+  Touchable,
+  TouchableOpacity,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import TouchableScale from 'react-native-touchable-scale';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {SharedElement} from 'react-navigation-shared-element';
 import {
   HomeData,
   initialHomePage,
@@ -42,14 +53,6 @@ export default () => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#EFEFEA'}}>
-      {/* <View //add a mask view so that overscroll color at the top is white instead of gray
-        style={{
-          backgroundColor: 'white',
-          position: 'absolute',
-          height: 300,
-          width,
-        }}
-      /> */}
       <CateogoriesHeader
         category={category}
         onCategorySelected={(cat) => {
@@ -258,6 +261,7 @@ const ContentScrollView = ({
 };
 
 const SecondaryCard = ({product}: {product: Product}): JSX.Element => {
+  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -294,20 +298,27 @@ const SecondaryCard = ({product}: {product: Product}): JSX.Element => {
         </Text>
         <Ionicons name="heart-outline" size={24} color={'black'} />
       </View>
-      <FastImage
-        resizeMode={'cover'}
-        source={{uri: product.imageUrl}}
-        style={{
-          height: 100,
-          width: 150,
-          marginBottom: 16,
-          transform: [
-            {
-              rotateZ: '-16deg',
-            },
-          ],
-        }}
-      />
+      <TouchableScale
+        onPress={() => {
+          navigation.navigate('ProductDetails', {
+            product,
+          });
+        }}>
+        <FastImage
+          resizeMode={'cover'}
+          source={{uri: product.imageUrl}}
+          style={{
+            height: 100,
+            width: 150,
+            marginBottom: 16,
+            transform: [
+              {
+                rotateZ: '-16deg',
+              },
+            ],
+          }}
+        />
+      </TouchableScale>
       <Text
         style={{
           color: 'black',
@@ -334,6 +345,7 @@ const MainCard = ({
   products: Product[];
   scrollX: Animated.Value;
 }): JSX.Element => {
+  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -370,36 +382,54 @@ const MainCard = ({
       <Text style={{color: 'white', fontSize: 14, fontFamily: 'Helvetica'}}>
         {product.price}
       </Text>
-      <AnimatedFastImage
-        resizeMode={'contain'}
-        source={{uri: product.imageUrl}}
+      <TouchableScale
+        onPress={() => {
+          navigation.navigate('ProductDetails', {
+            product,
+          });
+        }}
         style={{
           position: 'absolute',
           height: 340,
           width: (width + 48) / 2,
-          left: 16,
-          transform: [
-            {
-              rotateZ: scrollX.interpolate({
-                inputRange: products.map((_, i) => i * ((width + 48) / 2 + 32)),
-                outputRange: products.map((_, i) => {
-                  return products.indexOf(product) === i ? '-16deg' : '-50deg';
+        }}>
+        <AnimatedFastImage
+          resizeMode={'contain'}
+          source={{uri: product.imageUrl}}
+          style={{
+            position: 'absolute',
+            height: 340,
+            width: (width + 48) / 2,
+            left: 16,
+            transform: [
+              {
+                rotateZ: scrollX.interpolate({
+                  inputRange: products.map(
+                    (_, i) => i * ((width + 48) / 2 + 32),
+                  ),
+                  outputRange: products.map((_, i) => {
+                    return products.indexOf(product) === i
+                      ? '-16deg'
+                      : '-50deg';
+                  }),
+                  extrapolate: 'clamp',
                 }),
-                extrapolate: 'clamp',
-              }),
-            },
-            {
-              scale: scrollX.interpolate({
-                inputRange: products.map((_, i) => i * ((width + 48) / 2 + 32)),
-                outputRange: products.map((_, i) => {
-                  return products.indexOf(product) === i ? 1.2 : 0.45;
+              },
+              {
+                scale: scrollX.interpolate({
+                  inputRange: products.map(
+                    (_, i) => i * ((width + 48) / 2 + 32),
+                  ),
+                  outputRange: products.map((_, i) => {
+                    return products.indexOf(product) === i ? 1.2 : 0.45;
+                  }),
+                  extrapolate: 'clamp',
                 }),
-                extrapolate: 'clamp',
-              }),
-            },
-          ],
-        }}
-      />
+              },
+            ],
+          }}
+        />
+      </TouchableScale>
       <MaterialIcons
         name="arrow-right-alt"
         size={24}

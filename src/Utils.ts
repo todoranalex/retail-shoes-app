@@ -6,7 +6,7 @@ export const mainCategories = [
   'Rebook',
   'Asics',
 ];
-export const subCategories = ['Featured', 'Nearing', 'New'];
+export const subCategories = ['Featured', 'Rising', 'New'];
 
 export type Product = {
   brand: string;

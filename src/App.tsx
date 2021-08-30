@@ -12,12 +12,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Favorites from './components/Favorites';
 import ShoppingCart from './components/ShoppingCart';
 import Profile from './components/Profile';
-import {createStackNavigator} from '@react-navigation/stack';
+import {
+  createStackNavigator,
+  HeaderStyleInterpolators,
+} from '@react-navigation/stack';
 import Home from './components/Home';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProductDetails from './components/ProductDetails';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Product} from './Utils';
+import Splash from './components/Splash';
 
 const HomeStack = () => {
   const Stack = createStackNavigator();
@@ -64,125 +67,155 @@ const HomeStack = () => {
           },
         }}
       />
-      <Stack.Screen
-        name={'ProductDetails'}
-        component={ProductDetails}
-        options={({route}) => ({
-          title: (route as any)?.params?.product?.name,
-          headerTitleStyle: {
-            fontFamily: 'Helvetica',
-            fontSize: 14,
-            color: 'white',
-          },
-          headerStyle: {
-            backgroundColor: (route as any)?.params?.product?.bgColor,
-            shadowOpacity: 0,
-          },
-          headerLeft: () => {
-            const navigation = useNavigation();
-            return (
-              <TouchableOpacity>
-                <MaterialIcons
-                  style={{marginLeft: 16, transform: [{rotate: '180deg'}]}}
-                  name="arrow-right-alt"
-                  size={24}
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                  color={'white'}
-                />
-              </TouchableOpacity>
-            );
-          },
-          headerRight: () => {
-            return (
-              <TouchableOpacity
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'rgba(0,0,0,0.1)',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 16,
-                }}>
-                <Icon name="heart-outline" size={20} color={'white'} />
-              </TouchableOpacity>
-            );
-          },
-          cardStyleInterpolator: ({current: {progress}}) => {
-            return {
-              cardStyle: {
-                opacity: progress,
-              },
-            };
-          },
-        })}
-      />
     </Stack.Navigator>
   );
 };
 
+const BottomTabs = () => {
+  const Tabs = createBottomTabNavigator();
+  return (
+    <Tabs.Navigator
+      initialRouteName={'Home'}
+      tabBarOptions={{
+        style: {
+          backgroundColor: '#EFEFEA',
+          borderTopColor: 'transparent',
+        },
+        allowFontScaling: true,
+        adaptive: true,
+        showLabel: false,
+        activeTintColor: '#f55c47',
+        inactiveTintColor: 'gray',
+      }}>
+      <Tabs.Screen
+        name={'Home'}
+        component={HomeStack}
+        options={{
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons
+              name="home-outline"
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name={'Favorites'}
+        component={Favorites}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Icon name="heart-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name={'ShoppingCart'}
+        component={ShoppingCart}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Icon name="cart-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name={'Profile'}
+        component={Profile}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Icon name="person-outline" size={24} color={color} />
+          ),
+        }}
+      />
+    </Tabs.Navigator>
+  );
+};
+
 const App = () => {
-  const BottomTabs = createBottomTabNavigator();
+  const Stack = createStackNavigator();
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <NavigationContainer>
-        <BottomTabs.Navigator
-          initialRouteName={'Home'}
-          tabBarOptions={{
-            style: {
-              backgroundColor: '#EFEFEA',
-              borderTopColor: 'transparent',
-            },
-            allowFontScaling: true,
-            adaptive: true,
-            showLabel: false,
-            activeTintColor: '#f55c47',
-            inactiveTintColor: 'gray',
-          }}>
-          <BottomTabs.Screen
-            name={'Home'}
-            component={HomeStack}
+        <Stack.Navigator initialRouteName={'SplashScreen'}>
+          <Stack.Screen
+            name={'SplashScreen'}
             options={{
-              tabBarIcon: ({color}) => (
-                <MaterialCommunityIcons
-                  name="home-outline"
-                  size={24}
-                  color={color}
-                />
-              ),
+              headerShown: false,
             }}
+            component={Splash}
           />
-          <BottomTabs.Screen
-            name={'Favorites'}
-            component={Favorites}
+          <Stack.Screen
+            name={'HomeTabs'}
             options={{
-              tabBarIcon: ({color}) => (
-                <Icon name="heart-outline" size={24} color={color} />
-              ),
+              headerShown: false,
+              cardStyleInterpolator: ({current: {progress}}) => {
+                return {
+                  cardStyle: {
+                    opacity: progress,
+                  },
+                };
+              },
             }}
+            component={BottomTabs}
           />
-          <BottomTabs.Screen
-            name={'ShoppingCart'}
-            component={ShoppingCart}
-            options={{
-              tabBarIcon: ({color}) => (
-                <Icon name="cart-outline" size={24} color={color} />
-              ),
-            }}
+          <Stack.Screen
+            name={'ProductDetails'}
+            component={ProductDetails}
+            options={({route}) => ({
+              headerStyleInterpolator: HeaderStyleInterpolators.forFade,
+              title: (route as any)?.params?.product?.name,
+              headerTitleStyle: {
+                fontFamily: 'Helvetica',
+                fontSize: 14,
+                color: 'white',
+              },
+              headerStyle: {
+                backgroundColor: (route as any)?.params?.product?.bgColor,
+                shadowOpacity: 0,
+              },
+              headerLeft: () => {
+                const navigation = useNavigation();
+                return (
+                  <TouchableOpacity>
+                    <MaterialIcons
+                      style={{marginLeft: 16, transform: [{rotate: '180deg'}]}}
+                      name="arrow-right-alt"
+                      size={24}
+                      onPress={() => {
+                        navigation.goBack();
+                      }}
+                      color={'white'}
+                    />
+                  </TouchableOpacity>
+                );
+              },
+              headerRight: () => {
+                return (
+                  <TouchableOpacity
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                      backgroundColor: 'rgba(0,0,0,0.1)',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginRight: 16,
+                    }}>
+                    <Icon name="heart-outline" size={20} color={'white'} />
+                  </TouchableOpacity>
+                );
+              },
+              cardStyleInterpolator: ({current: {progress}}) => {
+                return {
+                  cardStyle: {
+                    opacity: progress,
+                  },
+                };
+              },
+            })}
           />
-          <BottomTabs.Screen
-            name={'Profile'}
-            component={Profile}
-            options={{
-              tabBarIcon: ({color}) => (
-                <Icon name="person-outline" size={24} color={color} />
-              ),
-            }}
-          />
-        </BottomTabs.Navigator>
+        </Stack.Navigator>
       </NavigationContainer>
     </>
   );

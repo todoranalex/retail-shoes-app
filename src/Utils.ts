@@ -15,6 +15,9 @@ export type Product = {
   imageUrl: string;
   bgColor?: string;
   promotion?: string;
+  description?: string;
+  secondaryImages?: string[];
+  sizes?: number[];
 };
 
 const nikeFeaturedProducts: Product[] = [
@@ -25,6 +28,15 @@ const nikeFeaturedProducts: Product[] = [
     imageUrl:
       'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:ffffff00/228c9922-686e-443d-b04b-16857e9af198/zoomx-vaporfly-next-2-racing-shoe-dxSLFw.png',
     bgColor: '#3fe0d0',
+    description:
+      'Gear up for your next personal best with the Nike Air Zoom Alphafly NEXT%. Responsive foam is combined with 2 Zoom Air units to push your running game forwards for your next marathon or road race.',
+    secondaryImages: [
+      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/906e5c98-b711-4782-872e-8f1b08013212/air-zoom-alphafly-next-racing-shoe-mGK8M0.png',
+      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/676c7f91-924e-43b0-8d30-44fa9f127491/air-zoom-alphafly-next-racing-shoe-mGK8M0.png',
+      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/b3c39e71-1f77-4eac-a3bb-0ea25205481e/air-zoom-alphafly-next-racing-shoe-mGK8M0.png',
+      'https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/d9cf5ff9-a819-495f-88be-7b7407aaa3a7/air-zoom-alphafly-next-racing-shoe-mGK8M0.png',
+    ],
+    sizes: [7, 8, 8.5, 9, 10],
   },
   {
     brand: 'NIKE',

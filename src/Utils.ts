@@ -1,3 +1,5 @@
+import {ImageTransitionSetting} from './components/Home';
+
 export const mainCategories = [
   'Nike',
   'Adidas',
@@ -150,3 +152,15 @@ export const nikeHomePage: HomeData = {
   trending: nikeTrendingProducts ?? [],
   more: nikeMoreProducts ?? [],
 };
+
+export function getComponentPosition(
+  component: any,
+): Promise<ImageTransitionSetting> {
+  return new Promise<ImageTransitionSetting>((resolve, _reject) => {
+    component.measure((_x, _y, w, h, pageX, pageY) => {
+      resolve({
+        layout: {top: pageY, left: pageX, width: w, height: h},
+      });
+    });
+  });
+}

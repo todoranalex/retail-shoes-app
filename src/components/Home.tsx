@@ -1,20 +1,21 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useRef, useState} from 'react';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useHeaderHeight} from '@react-navigation/stack';
+import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
 import {
   Text,
   View,
   ScrollView,
   Animated,
   Dimensions,
-  Touchable,
+  StyleSheet,
   TouchableOpacity,
+  Easing,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import TouchableScale from 'react-native-touchable-scale';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {SharedElement} from 'react-navigation-shared-element';
 import {
+  getComponentPosition,
   HomeData,
   initialHomePage,
   mainCategories,
@@ -22,16 +23,26 @@ import {
   Product,
   subCategories,
 } from '../Utils';
+import {IMAGE_HEIGHT, IMAGE_WIDTH} from './ProductDetails';
 
 const {width} = Dimensions.get('window');
 
-const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
+export type ImageTransitionSetting = {
+  layout: {top: number; left: number; height: number; width: number};
+  imageUrl?: string;
+  product?: Product;
+};
 
 export default () => {
+  const navigation = useNavigation();
+  const headerHeight = useHeaderHeight();
   const scrollX = useRef(new Animated.Value(0)).current;
   const [category, setCategory] = useState(0);
   const [subCategory, setSubCategory] = useState(0);
   const [homeData, setHomeData] = useState<HomeData>(initialHomePage);
+  const [animSetting, setAnimSetting] = useState<ImageTransitionSetting>();
+
+  const anim = useRef(new Animated.Value(0)).current;
 
   const topProducts =
     subCategory === 0
@@ -51,8 +62,68 @@ export default () => {
     }
   }, [category]);
 
+  useEffect(() => {
+    if (animSetting) {
+      Animated.timing(anim, {
+        toValue: 1,
+        duration: 600,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+        useNativeDriver: false,
+      }).start(() => {
+        navigation.navigate('ProductDetails', {
+          product: animSetting.product,
+        });
+      });
+    } else {
+    }
+  }, [animSetting]);
+  if (animSetting) {
+    const destTop = 0;
+    const destLeft = (width - IMAGE_WIDTH) / 2;
+
+    console.log(animSetting);
+    return (
+      <View style={{flex: 1, backgroundColor: 'white'}}>
+        <Animated.View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            transform: [
+              {
+                rotateZ: '-16deg',
+              },
+              {
+                scale: 0.7,
+              },
+            ],
+            width: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [animSetting.layout.width, IMAGE_WIDTH],
+            }),
+            height: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [animSetting.layout.height, IMAGE_HEIGHT],
+            }),
+            top: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [animSetting.layout.top - headerHeight, destTop],
+            }),
+            left: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [animSetting.layout.left, destLeft],
+            }),
+          }}>
+          <FastImage
+            resizeMode={'cover'}
+            source={{uri: animSetting.imageUrl}}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
+      </View>
+    );
+  }
+
   return (
-    <View style={{flex: 1, backgroundColor: '#EFEFEA'}}>
+    <Animated.View style={{flex: 1, backgroundColor: '#EFEFEA'}}>
       <CateogoriesHeader
         category={category}
         onCategorySelected={(cat) => {
@@ -109,7 +180,16 @@ export default () => {
                     <MainCard
                       products={topProducts}
                       product={p}
+                      hideImage={!!animSetting}
                       scrollX={scrollX}
+                      onPress={(animSetting) => {
+                        setTimeout(() => {
+                          setAnimSetting({
+                            ...animSetting,
+                            product: p,
+                          });
+                        }, 500);
+                      }}
                     />
                   </Animated.View>
                 );
@@ -127,7 +207,43 @@ export default () => {
           )}
         </ScrollView>
       )}
-    </View>
+      {animSetting && (
+        <Animated.View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            transform: [
+              {
+                rotateZ: '-16deg',
+              },
+              {
+                scale: 0.7,
+              },
+            ],
+            width: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [animSetting.layout.width, IMAGE_WIDTH],
+            }),
+            height: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [animSetting.layout.height, IMAGE_HEIGHT],
+            }),
+            top: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [animSetting.layout.top - headerHeight, destTop],
+            }),
+            left: anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [animSetting.layout.left, destLeft],
+            }),
+          }}>
+          <FastImage
+            resizeMode={'cover'}
+            source={{uri: animSetting.imageUrl}}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
+      )}
+    </Animated.View>
   );
 };
 
@@ -298,7 +414,7 @@ const SecondaryCard = ({product}: {product: Product}): JSX.Element => {
         </Text>
         <Ionicons name="heart-outline" size={24} color={'black'} />
       </View>
-      <TouchableScale
+      <TouchableOpacity
         onPress={() => {
           navigation.navigate('ProductDetails', {
             product,
@@ -318,7 +434,7 @@ const SecondaryCard = ({product}: {product: Product}): JSX.Element => {
             ],
           }}
         />
-      </TouchableScale>
+      </TouchableOpacity>
       <Text
         style={{
           color: 'black',
@@ -340,12 +456,16 @@ const MainCard = ({
   product,
   products,
   scrollX,
+  hideImage,
+  onPress,
 }: {
   product: Product;
   products: Product[];
   scrollX: Animated.Value;
+  hideImage: boolean;
+  onPress: (setting: ImageTransitionSetting | undefined) => void;
 }): JSX.Element => {
-  const navigation = useNavigation();
+  const imageRef = useRef<TouchableOpacity>();
   return (
     <View
       style={{
@@ -382,25 +502,24 @@ const MainCard = ({
       <Text style={{color: 'white', fontSize: 14, fontFamily: 'Helvetica'}}>
         {product.price}
       </Text>
-      <TouchableScale
-        onPress={() => {
-          navigation.navigate('ProductDetails', {
-            product,
-          });
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={async () => {
+          try {
+            const layout = await getComponentPosition(imageRef.current);
+            console.log(layout);
+            onPress({...layout, imageUrl: product.imageUrl});
+          } catch (e) {
+            console.log('Could not get image position', e);
+            onPress(undefined);
+          }
         }}
-        style={{
-          position: 'absolute',
-          height: 340,
-          width: (width + 48) / 2,
-        }}>
-        <AnimatedFastImage
-          resizeMode={'contain'}
-          source={{uri: product.imageUrl}}
+        style={StyleSheet.absoluteFill}>
+        <Animated.View
           style={{
-            position: 'absolute',
-            height: 340,
-            width: (width + 48) / 2,
-            left: 16,
+            //Hide the real image when the fake one is animating
+            opacity: hideImage ? 0 : 1,
+            ...StyleSheet.absoluteFillObject,
             transform: [
               {
                 rotateZ: scrollX.interpolate({
@@ -427,9 +546,20 @@ const MainCard = ({
                 }),
               },
             ],
-          }}
-        />
-      </TouchableScale>
+          }}>
+          <FastImage
+            // @ts-ignore
+            ref={(ref) => {
+              if (ref) {
+                imageRef.current = ref;
+              }
+            }}
+            style={StyleSheet.absoluteFill}
+            resizeMode={'contain'}
+            source={{uri: product.imageUrl}}
+          />
+        </Animated.View>
+      </TouchableOpacity>
       <MaterialIcons
         name="arrow-right-alt"
         size={24}

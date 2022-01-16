@@ -18,6 +18,9 @@ import {Product} from '../Utils';
 const BUTTON_HEIGHT = 40;
 const {width, height} = Dimensions.get('window');
 
+export const IMAGE_HEIGHT = 250;
+export const IMAGE_WIDTH = 350;
+
 export default () => {
   const {product}: {product: Product} = useRoute().params as any;
   const [selectedSize, setSelectedSize] = useState<number>(-1);
@@ -64,12 +67,15 @@ export default () => {
           source={{uri: product.imageUrl}}
           style={{
             alignSelf: 'center',
-            height: 250,
-            width: 300,
+            height: IMAGE_HEIGHT,
+            width: IMAGE_WIDTH,
             marginBottom: 16,
             transform: [
               {
                 rotateZ: '-16deg',
+              },
+              {
+                scale: 0.7,
               },
             ],
           }}
